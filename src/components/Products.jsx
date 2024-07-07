@@ -1,16 +1,17 @@
+// Products.js
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Row, Col, Container, Button, Card, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Navbr from './Navbr';
-import ProductDetailsModal from "./ProductDetailsModal"
+import ProductDetailsModal from "./ProductDetailsModal";
 
 const Products = () => {
   const [data, setData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [modalShow, setModalShow] = useState(false);
-  const [items, setItems] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -30,13 +31,24 @@ const Products = () => {
     setIsLoading(true);
     let url = 'https://api.storerestapi.com/products';
     if (category !== 'all') {
-      url = `https://api.storerestapi.com/products/category/${category}`;
+      axios.get(`https://api.storerestapi.com/categories/${category}`)
+      .then(response => {
+        setData(response.data.data.products);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+        setError(error);
+        setIsLoading(false);
+      });
+      return data;
     }
+    console.log('computers');
     axios.get(url)
       .then(response => {
         setData(response.data.data);
+        console.log(' respose data', response.data.data);
         setIsLoading(false);
-        // console.log('response data', data);
       })
       .catch(error => {
         console.error('Error fetching products:', error);
@@ -48,6 +60,11 @@ const Products = () => {
   const handleSelectCategory = (category) => {
     setSelectedCategory(category);
     fetchProducts(category);
+  };
+
+  const handleClicked = (item) => {
+    setModalShow(true);
+    setSelectedItem(item);
   };
 
   if (isLoading) {
@@ -70,13 +87,6 @@ const Products = () => {
     );
   }
 
-const handleClicked=(item)=>{
-  setModalShow(true)
-  setItems(item)
-}
-
-
-
   return (
     <>
       <Navbr categories={['all', ...categories.map(cat => cat.name)]} onSelectCategory={handleSelectCategory} />
@@ -89,10 +99,9 @@ const handleClicked=(item)=>{
                 <Card.Body>
                   <Card.Title>{item.title}</Card.Title>
                   <Card.Text>
-                    {item.description || 'No description available.'}
+                    {item.description}
                   </Card.Text>
                   <Card.Text><strong>Price:</strong> ${item.price}</Card.Text>
-                  {/* <Button variant="primary" size="md" onClick={() => navigate(`/product/${item._id}`)}> */}
                   <Button variant="primary" size="md" onClick={() => handleClicked(item)}>
                     Product Details
                   </Button>
@@ -103,11 +112,13 @@ const handleClicked=(item)=>{
         </Row>
       </Container>
 
-      <ProductDetailsModal
-      item={items}
-      show={modalShow}
-      onHide={() => setModalShow(false)}
-      />
+      {selectedItem && (
+        <ProductDetailsModal
+          item={selectedItem}
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+        />
+      )}
     </>
   );
 };
