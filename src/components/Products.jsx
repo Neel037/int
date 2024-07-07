@@ -16,7 +16,6 @@ const Products = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch all categories
     axios.get('https://api.storerestapi.com/categories')
       .then(response => {
         setCategories(response.data.data);
@@ -24,8 +23,6 @@ const Products = () => {
       .catch(error => {
         console.error('Error fetching categories:', error);
       });
-
-    // Fetch all products initially
     fetchProducts('all');
   }, []);
 
@@ -39,6 +36,7 @@ const Products = () => {
       .then(response => {
         setData(response.data.data);
         setIsLoading(false);
+        // console.log('response data', data);
       })
       .catch(error => {
         console.error('Error fetching products:', error);
