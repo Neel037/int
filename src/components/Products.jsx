@@ -31,6 +31,9 @@ const Products = () => {
     setIsLoading(true);
     let url = 'https://api.storerestapi.com/products';
     if (category !== 'all') {
+      // working here mizan
+      
+      // axios.get(`https://api.storerestapi.com/categories/phone-and-tablets`)
       axios.get(`https://api.storerestapi.com/categories/${category}`)
       .then(response => {
         setData(response.data.data.products);
