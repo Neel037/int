@@ -3,11 +3,14 @@ import axios from 'axios';
 import { Row, Col, Container, Button, Card, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Navbr from './Navbr';
+import ProductDetailsModal from "./ProductDetailsModal"
 
 const Products = () => {
   const [data, setData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [modalShow, setModalShow] = useState(false);
+  const [items, setItems] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -69,8 +72,9 @@ const Products = () => {
     );
   }
 
-const handleClicked=()=>{
-  console.log('handleClicked');
+const handleClicked=(item)=>{
+  setModalShow(true)
+  setItems(item)
 }
 
 
@@ -91,7 +95,7 @@ const handleClicked=()=>{
                   </Card.Text>
                   <Card.Text><strong>Price:</strong> ${item.price}</Card.Text>
                   {/* <Button variant="primary" size="md" onClick={() => navigate(`/product/${item._id}`)}> */}
-                  <Button variant="primary" size="md" onClick={() => handleClicked(item.id)}>
+                  <Button variant="primary" size="md" onClick={() => handleClicked(item)}>
                     Product Details
                   </Button>
                 </Card.Body>
@@ -100,6 +104,12 @@ const handleClicked=()=>{
           ))}
         </Row>
       </Container>
+
+      <ProductDetailsModal
+      item={items}
+      show={modalShow}
+      onHide={() => setModalShow(false)}
+      />
     </>
   );
 };
