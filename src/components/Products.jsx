@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Row, Col, Container, Button, Card, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Navbr from './Navbr';
-// import ProductDetails from "./ProductDetails";
+import ProductDetails from "./ProductDetailsModal";
 
 const Products = () => {
   const [data, setData] = useState([]);
@@ -68,9 +68,9 @@ const Products = () => {
   };
 
   const handleClicked = (item) => {
-    // setModalShow(true);
-    // setSelectedItem(item);
-    navigate("/product/:id");
+    setModalShow(true);
+    setSelectedItem(item);
+    // navigate("/product/:id");
   };
 
   if (isLoading) {
@@ -118,13 +118,13 @@ const Products = () => {
         </Row>
       </Container>
 
-      {/* {selectedItem && (
+      {selectedItem && (
         <ProductDetails
           item={selectedItem}
           show={modalShow}
           onHide={() => setModalShow(false)}
         />
-      )} */}
+      )}
     </>
   );
 };
