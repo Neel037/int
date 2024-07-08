@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Row, Col, Container, Button, Card, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Navbr from './Navbr';
-import ProductDetailsModal from "./ProductDetailsModal";
+// import ProductDetails from "./ProductDetails";
 
 const Products = () => {
   const [data, setData] = useState([]);
@@ -27,14 +27,17 @@ const Products = () => {
     fetchProducts('all');
   }, []);
 
+  function formatString(input) {
+    const x= input.replace('&', 'and').toLowerCase();
+      return x.replace(/\s+/g, "-").toLowerCase();
+  }
+
   const fetchProducts = (category) => {
     setIsLoading(true);
     let url = 'https://api.storerestapi.com/products';
     if (category !== 'all') {
-      // working here mizan
-      
-      // axios.get(`https://api.storerestapi.com/categories/phone-and-tablets`)
-      axios.get(`https://api.storerestapi.com/categories/${category}`)
+      const formattedString = formatString(category);
+      axios.get(`https://api.storerestapi.com/categories/${formattedString}`)
       .then(response => {
         setData(response.data.data.products);
         setIsLoading(false);
@@ -46,7 +49,6 @@ const Products = () => {
       });
       return data;
     }
-    console.log('computers');
     axios.get(url)
       .then(response => {
         setData(response.data.data);
@@ -66,8 +68,9 @@ const Products = () => {
   };
 
   const handleClicked = (item) => {
-    setModalShow(true);
-    setSelectedItem(item);
+    // setModalShow(true);
+    // setSelectedItem(item);
+    navigate("/product/:id");
   };
 
   if (isLoading) {
@@ -115,13 +118,13 @@ const Products = () => {
         </Row>
       </Container>
 
-      {selectedItem && (
-        <ProductDetailsModal
+      {/* {selectedItem && (
+        <ProductDetails
           item={selectedItem}
           show={modalShow}
           onHide={() => setModalShow(false)}
         />
-      )}
+      )} */}
     </>
   );
 };
